@@ -33,7 +33,7 @@ namespace GoogleMobileAds.iOS
         internal delegate void GADUInterstitialDidReceiveAdCallback(IntPtr interstitialClient);
 
         internal delegate void GADUInterstitialDidFailToReceiveAdWithErrorCallback(
-                IntPtr interstitialClient, string error);
+                IntPtr interstitialClient, IntPtr error);
 
         internal delegate void GADUInterstitialWillPresentScreenCallback(IntPtr interstitialClient);
 
@@ -49,7 +49,7 @@ namespace GoogleMobileAds.iOS
 
         public event EventHandler<EventArgs> OnAdLoaded;
 
-        public event EventHandler<AdFailedToLoadEventArgs> OnAdFailedToLoad;
+        public event EventHandler<LoadAdErrorClientEventArgs> OnAdFailedToLoad;
 
         public event EventHandler<EventArgs> OnAdOpening;
 
@@ -160,14 +160,15 @@ namespace GoogleMobileAds.iOS
 
         [MonoPInvokeCallback(typeof(GADUInterstitialDidFailToReceiveAdWithErrorCallback))]
         private static void InterstitialDidFailToReceiveAdWithErrorCallback(
-                IntPtr interstitialClient, string error)
+                IntPtr interstitialClient, IntPtr error)
         {
             InterstitialClient client = IntPtrToInterstitialClient(interstitialClient);
             if (client.OnAdFailedToLoad != null)
             {
-                AdFailedToLoadEventArgs args = new AdFailedToLoadEventArgs()
+                LoadAdErrorClientEventArgs args = new LoadAdErrorClientEventArgs()
                 {
-                    Message = error
+                    LoadAdErrorClient = new LoadAdErrorClient(error),
+                    Message = "error"
                 };
                 client.OnAdFailedToLoad(client, args);
             }

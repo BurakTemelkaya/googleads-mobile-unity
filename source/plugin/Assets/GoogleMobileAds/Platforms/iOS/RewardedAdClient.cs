@@ -34,10 +34,10 @@ namespace GoogleMobileAds.iOS
             IntPtr rewardedAdClient);
 
         internal delegate void GADURewardedAdDidFailToReceiveAdWithErrorCallback(
-            IntPtr rewardedAdClient, string error);
+            IntPtr rewardedAdClient, IntPtr error);
 
         internal delegate void GADURewardedAdDidFailToShowAdWithErrorCallback(
-            IntPtr rewardedAdClient, string error);
+            IntPtr rewardedAdClient, IntPtr error);
 
         internal delegate void GADURewardedAdDidOpenCallback(
             IntPtr rewardedAdClient);
@@ -56,9 +56,9 @@ namespace GoogleMobileAds.iOS
 
         public event EventHandler<EventArgs> OnAdLoaded;
 
-        public event EventHandler<AdErrorEventArgs> OnAdFailedToLoad;
+        public event EventHandler<LoadAdErrorClientEventArgs> OnAdFailedToLoad;
 
-        public event EventHandler<AdErrorEventArgs> OnAdFailedToShow;
+        public event EventHandler<AdErrorClientEventArgs> OnAdFailedToShow;
 
         public event EventHandler<EventArgs> OnAdOpening;
 
@@ -187,14 +187,15 @@ namespace GoogleMobileAds.iOS
 
         [MonoPInvokeCallback(typeof(GADURewardedAdDidFailToReceiveAdWithErrorCallback))]
         private static void RewardedAdDidFailToReceiveAdWithErrorCallback(
-            IntPtr rewardedAdClient, string error)
+            IntPtr rewardedAdClient, IntPtr error)
         {
             RewardedAdClient client = IntPtrToRewardedAdClient(rewardedAdClient);
             if (client.OnAdFailedToLoad != null)
             {
-                AdErrorEventArgs args = new AdErrorEventArgs()
+                LoadAdErrorClientEventArgs args = new LoadAdErrorClientEventArgs()
                 {
-                    Message = error
+                    LoadAdErrorClient = new LoadAdErrorClient(error),
+                    Message = Externs.GADUGetAdErrorMessage(error)
                 };
                 client.OnAdFailedToLoad(client, args);
             }
@@ -202,14 +203,15 @@ namespace GoogleMobileAds.iOS
 
         [MonoPInvokeCallback(typeof(GADURewardedAdDidFailToShowAdWithErrorCallback))]
         private static void RewardedAdDidFailToShowAdWithErrorCallback(
-            IntPtr rewardedAdClient, string error)
+            IntPtr rewardedAdClient, IntPtr error)
         {
             RewardedAdClient client = IntPtrToRewardedAdClient(rewardedAdClient);
             if (client.OnAdFailedToShow != null)
             {
-                AdErrorEventArgs args = new AdErrorEventArgs()
+                AdErrorClientEventArgs args = new AdErrorClientEventArgs()
                 {
-                    Message = error
+                    AdErrorClient = new AdErrorClient(error),
+                    Message = Externs.GADUGetAdErrorMessage(error)
                 };
                 client.OnAdFailedToShow(client, args);
             }

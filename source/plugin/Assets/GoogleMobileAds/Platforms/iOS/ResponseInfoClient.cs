@@ -32,6 +32,15 @@ namespace GoogleMobileAds.iOS
             iosResponseInfo = Externs.GADUGetResponseInfo(adFormat);
 
         }
+        public ResponseInfoClient()
+        {
+
+        }
+        public void InitResponseInfoAdError(IntPtr error)
+        {
+            iosResponseInfo = Externs.GADUGetAdErrorResponseInfo(error);
+        }
+
 
         public string GetMediationAdapterClassName()
         {

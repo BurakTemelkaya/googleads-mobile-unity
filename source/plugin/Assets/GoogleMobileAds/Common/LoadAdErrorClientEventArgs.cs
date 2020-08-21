@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Google, Inc.
+// Copyright (C) 2020 Google, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
 
 using System;
 
-namespace GoogleMobileAds.Api
+namespace GoogleMobileAds.Common
 {
     // Event that occurs when an ad fails to load.
-    public class AdFailedToLoadEventArgs : EventArgs
+    public class LoadAdErrorClientEventArgs : EventArgs
     {
-        public string Message { get; set; }
+        public ILoadAdErrorClient LoadAdErrorClient { get; set;}
+        public string Message {get; set;}
+
     }
 }
